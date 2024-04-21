@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GLPIAgentUpdater.Services.Interfaces
+{
+    internal interface IChecker
+    {
+        public Task Run(CancellationToken cancellationToken);
+    }
+}
