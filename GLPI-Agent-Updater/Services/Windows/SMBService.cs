@@ -7,19 +7,19 @@ using System.ServiceProcess;
 
 namespace GLPIAgentUpdater.Services.Windows
 {
-    internal class GithubService : IChecker
+    internal class SMBService : IChecker
     {
         private IEventManager _em;
-        private readonly ILogger<GithubService> _logger;
+        private readonly ILogger<SMBService> _logger;
         private readonly IRegistry _registry;
         private readonly GitHubClient _client;
         private readonly int _interval;
 
         private Version _agentVersion;
 
-        public GithubService(
+        public SMBService(
             IEventManager eventManager,
-            ILogger<GithubService> logger,
+            ILogger<SMBService> logger,
             IRegistry registry)
         {
             _em = eventManager;
@@ -43,51 +43,16 @@ namespace GLPIAgentUpdater.Services.Windows
             {
 
                 _agentVersion = _registry.GetAgentVersion();
-
-                _em.Info("Checking Github version");
-                IReadOnlyList<Release> releases = await _client.Repository.Release.GetAll("glpi-project", "glpi-agent");
-
-                if (releases.Count == 0)
+                string? server = (string)_registry.Get("Server");
+                if (server == null)
                 {
-                    _em.Info("No release available");
-                    await Task.Delay(_interval, cancellationToken);
-                    continue;
+                    _em.Error("Server cannot be empty");
+                    throw new Exception("Server cannot be empty");
                 }
 
-                Release latest = releases[0];
-                Version latestVersion;
-                Version.TryParse(latest.TagName, out latestVersion);
-
-                if (latestVersion == _agentVersion || latestVersion < _agentVersion)
-                {
-                    _em.Info("GLPI Agent already up to date");
-                    await Task.Delay(_interval, cancellationToken);
-                    continue;
-                }
-
-                _em.Info($"New GLPI Agent available.\r\nCurrent installed version : {_agentVersion}\r\nAvailable version : {latestVersion}", 10);
-
-
-                int delay = (int)_registry.Get("GithubDelay");
-
-                // No delayed installation
-                if (delay == 0)
-                {
-                    await InstallFromGithubAsync(latest);
-                    await Task.Delay(_interval, cancellationToken);
-                    continue;
-                }
-
-                DateTimeOffset now = new DateTimeOffset(DateTime.Now);
-                TimeSpan delta = (TimeSpan)(now - latest.PublishedAt);
-                if (delta.Days > delay)
-                {
-                    _em.Info("Installation delayed is done.");
-                    await InstallFromGithubAsync(latest);
-                }
-                else
-                {
-                    _em.Info($"Installation delayed. Days befor update : {delta.Days}");
+                Uri uri = new Uri(server);
+                if (Path.Exists(uri.AbsolutePath)) { 
+                    
                 }
 
                 await Task.Delay(_interval, cancellationToken);

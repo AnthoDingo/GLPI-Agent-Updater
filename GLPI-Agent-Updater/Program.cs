@@ -1,5 +1,6 @@
 using GLPIAgentUpdater.Services;
 using GLPIAgentUpdater.Services.Interfaces;
+
 #if OS_WINDOWS
 using GLPIAgentUpdater.Services.Windows;
 using GLPIAgentUpdater.Statics;
@@ -26,9 +27,10 @@ namespace GLPIAgentUpdater
             {
                 try
                 {
-                    switch(args[0])
+                    switch(args[0].ToLower())
                     {
                         case "/install":
+                        case "--install":
 #if OS_WINDOWS
                             SetupWindows.Install(_serviceName);
 #elif OS_LINUX
@@ -39,6 +41,7 @@ namespace GLPIAgentUpdater
 
                             break;
                         case "/uninstall":
+                        case "--uninstall":
 #if OS_WINDOWS
                             SetupWindows.Uninstall(_serviceName);
 #elif OS_LINUX
@@ -76,16 +79,13 @@ namespace GLPIAgentUpdater
                 .AddSingleton<IEventManager, EventManager>()
                 .AddSingleton<IRegistry, RegistryService>()
                 .AddSingleton<GithubService>()
-                .AddSingleton<OwnServerService>()
+                .AddSingleton<GLPIService>()
                 ;
 #elif OS_LINUX
 
 #elif OS_MAC
 
 #endif
-
-            services
-                .AddHostedService<WindowsBackgroundService>();
 
 
             var app = builder.Build();

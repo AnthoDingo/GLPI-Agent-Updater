@@ -1,6 +1,6 @@
+using GLPIAgentUpdater.Enums.Windows;
 using GLPIAgentUpdater.Services.Interfaces;
 using GLPIAgentUpdater.Services.Windows;
-using Octokit;
 
 namespace GLPIAgentUpdater.Services
 {
@@ -24,6 +24,21 @@ namespace GLPIAgentUpdater.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             IChecker checker;
+            int mode = (int)_registry.Get("Mode");
+            switch (mode)
+            {
+                case (int)Mode.Github:
+                    checker = _serviceProvider.GetRequiredService<GithubService>();
+                    break;
+                case (int)Mode.SMB:
+
+                    break;
+                case (int)Mode.GLPI:
+                    checker = _serviceProvider.GetRequiredService<GLPIService>();
+                    break;
+            }
+
+
             bool useGithub = (int)_registry.Get("Github") != 0;
 
             if (useGithub)
@@ -32,7 +47,7 @@ namespace GLPIAgentUpdater.Services
             }
             else
             {
-                checker = _serviceProvider.GetRequiredService<OwnServerService>();
+                checker = _serviceProvider.GetRequiredService<GLPIService>();
             }
 
             await checker.Run(stoppingToken);

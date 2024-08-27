@@ -35,15 +35,14 @@ namespace GLPIAgentUpdater.Services.Windows
                 _key = Registry.LocalMachine.OpenSubKey(_keyName, true);
             }
 
-            if (Get("Github") == null)
+            if (Get("Mode") == null)
             {
-                _key.SetValue("Github", true, RegistryValueKind.DWord);
+                _key.SetValue("Mode", 0, RegistryValueKind.DWord);
             }
             if (Get("GithubDelay") == null)
             {
                 _key.SetValue("GithubDelay", 0, RegistryValueKind.DWord);
             }
-
             if (Get("Server") == null)
             {
                 _key.SetValue("Server", string.Empty, RegistryValueKind.String);

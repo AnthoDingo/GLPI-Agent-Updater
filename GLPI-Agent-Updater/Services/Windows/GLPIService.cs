@@ -2,7 +2,7 @@
 
 namespace GLPIAgentUpdater.Services.Windows
 {
-    internal class OwnServerService : IChecker
+    internal class GLPIService : IChecker
     {
 
         private readonly ILogger<GithubService> _logger;
@@ -10,7 +10,7 @@ namespace GLPIAgentUpdater.Services.Windows
 
         private Version _agentVersion;
 
-        public OwnServerService(ILogger<GithubService> logger, IRegistry registry)
+        public GLPIService(ILogger<GithubService> logger, IRegistry registry)
         {
             _logger = logger;
             _registry = registry;
