@@ -1,6 +1,7 @@
 using GLPIAgentUpdater.Enums.Windows;
 using GLPIAgentUpdater.Services.Interfaces;
 using GLPIAgentUpdater.Services.Windows;
+using System.Diagnostics;
 
 namespace GLPIAgentUpdater.Services
 {
@@ -23,34 +24,27 @@ namespace GLPIAgentUpdater.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            IChecker checker;
+            IChecker? checker = null;
             int mode = (int)_registry.Get("Mode");
             switch (mode)
             {
-                case (int)Mode.Github:
+                case (int)Mode.Github:                
                     checker = _serviceProvider.GetRequiredService<GithubService>();
                     break;
                 case (int)Mode.SMB:
-
+                    checker = _serviceProvider.GetRequiredService<SMBService>();
                     break;
                 case (int)Mode.GLPI:
                     checker = _serviceProvider.GetRequiredService<GLPIService>();
                     break;
             }
 
-
-            bool useGithub = (int)_registry.Get("Github") != 0;
-
-            if (useGithub)
+            if (checker != null)
             {
-                checker = _serviceProvider.GetRequiredService<GithubService>();
+                await checker.Run(stoppingToken);
             }
-            else
-            {
-                checker = _serviceProvider.GetRequiredService<GLPIService>();
-            }
+            
 
-            await checker.Run(stoppingToken);
         }
     }
 }

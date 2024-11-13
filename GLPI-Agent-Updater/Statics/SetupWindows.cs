@@ -39,11 +39,10 @@ namespace GLPIAgentUpdater.Statics
 
             Process uninstall = new Process()
             {
-                StartInfo =
-                                {
-                                    FileName = "sc.exe",
-                                    Arguments = $"delete \"{ServiceName}\""
-                                }
+                StartInfo = {
+                                FileName = "sc.exe",
+                                Arguments = $"delete \"{ServiceName}\""
+                            }
             };
             uninstall.Start();
             uninstall.WaitForExit();

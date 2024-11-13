@@ -2,7 +2,6 @@
   "profiles": {
     "GLPI_agent_updater": {
       "commandName": "Project",
-      "commandLineArgs": "/install",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       },

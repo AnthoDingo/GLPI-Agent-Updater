@@ -39,9 +39,9 @@ namespace GLPIAgentUpdater.Services.Windows
             {
                 _key.SetValue("Mode", 0, RegistryValueKind.DWord);
             }
-            if (Get("GithubDelay") == null)
+            if(Get("Version") == null)
             {
-                _key.SetValue("GithubDelay", 0, RegistryValueKind.DWord);
+                _key.SetValue("Version", "Latest", RegistryValueKind.String);
             }
             if (Get("Server") == null)
             {
@@ -83,6 +83,8 @@ namespace GLPIAgentUpdater.Services.Windows
                 Environment.Exit(1);
             }
 
+            //{ 1CFB6EE6 - 6BF5 - 1014 - B525 - EBCD8FA69B29}
+
             Version agentVersion;
             RegistryKey uninstallKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
             foreach (string subKeyName in uninstallKey.GetSubKeyNames())
@@ -95,7 +97,7 @@ namespace GLPIAgentUpdater.Services.Windows
                 }
 
                 string displayName = objDisplayName.ToString();
-                if (Regex.IsMatch(displayName, @"^GLPI Agent \d+\.\d+\.\d+$"))
+                if (Regex.IsMatch(displayName, @"^GLPI Agent \d+\.\d+$") || Regex.IsMatch(displayName, @"^GLPI Agent \d+\.\d+\.\d+$"))
                 {
                     Version.TryParse(subKey.GetValue("DisplayVersion").ToString(), out agentVersion);
                     return agentVersion;

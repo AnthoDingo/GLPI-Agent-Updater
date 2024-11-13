@@ -78,7 +78,9 @@ namespace GLPIAgentUpdater
             services
                 .AddSingleton<IEventManager, EventManager>()
                 .AddSingleton<IRegistry, RegistryService>()
+                .AddSingleton<IInstaller, InstallerService>()
                 .AddSingleton<GithubService>()
+                .AddSingleton<SMBService>()
                 .AddSingleton<GLPIService>()
                 ;
 #elif OS_LINUX
