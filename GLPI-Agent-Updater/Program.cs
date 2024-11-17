@@ -1,5 +1,6 @@
-using GLPIAgentUpdater.Services;
-using GLPIAgentUpdater.Services.Interfaces;
+using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Interfaces.Windows;
+using GLPIAgentUpdater.Services.BackgroundServices;
 
 #if OS_WINDOWS
 using GLPIAgentUpdater.Services.Windows;
@@ -31,24 +32,32 @@ namespace GLPIAgentUpdater
                     {
                         case "/install":
                         case "--install":
-#if OS_WINDOWS
-                            SetupWindows.Install(_serviceName);
-#elif OS_LINUX
+                            switch (true)
+                            {
+                                case true when OperatingSystem.IsWindows():
+                                    SetupWindows.Install(_serviceName);
+                                    break;
+                                case true when OperatingSystem.IsLinux():
+                                    break;
+                                case true when OperatingSystem.IsMacOS():
+                                    break;
 
-#elif OS_MAC
-
-#endif
+                            }
 
                             break;
                         case "/uninstall":
                         case "--uninstall":
-#if OS_WINDOWS
-                            SetupWindows.Uninstall(_serviceName);
-#elif OS_LINUX
+                            switch (true)
+                            {
+                                case true when OperatingSystem.IsWindows():
+                                    SetupWindows.Uninstall(_serviceName);
+                                    break;
+                                case true when OperatingSystem.IsLinux():
+                                    break;
+                                case true when OperatingSystem.IsMacOS():
+                                    break;
 
-#elif OS_MAC
-
-#endif
+                            }
                             break;
                     }
 
@@ -65,31 +74,34 @@ namespace GLPIAgentUpdater
             IServiceCollection services = builder.Services;
 
 
-#if OS_WINDOWS
-            services
-                .AddHostedService<WindowsBackgroundService>()
-                .AddWindowsService(options =>
-                {
-                    options.ServiceName = _serviceName;
-                });
 
-            LoggerProviderOptions.RegisterProviderOptions<EventLogSettings, EventLogLoggerProvider>(services);
+            switch (true)
+            {
+                case true when OperatingSystem.IsWindows():
+                    services
+                    .AddHostedService<WindowsBackgroundService>()
+                    .AddWindowsService(options =>
+                    {
+                        options.ServiceName = _serviceName;
+                    });
 
-            services
-                .AddSingleton<IEventManager, EventManager>()
-                .AddSingleton<IRegistry, RegistryService>()
-                .AddSingleton<IInstaller, InstallerService>()
-                .AddSingleton<GithubService>()
-                .AddSingleton<SMBService>()
-                .AddSingleton<GLPIService>()
-                ;
-#elif OS_LINUX
+                        LoggerProviderOptions.RegisterProviderOptions<EventLogSettings, EventLogLoggerProvider>(services);
 
-#elif OS_MAC
+                        services
+                            .AddSingleton<IEventManager, EventManager>()
+                            .AddSingleton<IRegistry, RegistryService>()
+                            .AddSingleton<IInstaller, InstallerService>()
+                            .AddSingleton<GithubService>()
+                            .AddSingleton<SMBService>()
+                            .AddSingleton<GLPIService>()
+                            ;
+                    break;
+                case true when OperatingSystem.IsLinux():
+                    break;
+                case true when OperatingSystem.IsMacOS():
+                    break;
 
-#endif
-
-
+            }
             var app = builder.Build();
             app.Run();
         }

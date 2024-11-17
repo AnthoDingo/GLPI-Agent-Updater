@@ -1,5 +1,4 @@
-﻿
-namespace GLPIAgentUpdater.Services.Interfaces
+﻿namespace GLPIAgentUpdater.Interfaces
 {
     internal interface IInstaller
     {

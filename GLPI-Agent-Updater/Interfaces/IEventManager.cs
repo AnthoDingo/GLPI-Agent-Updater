@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GLPIAgentUpdater.Services.Interfaces
+namespace GLPIAgentUpdater.Interfaces.Windows
 {
     internal interface IEventManager
     {

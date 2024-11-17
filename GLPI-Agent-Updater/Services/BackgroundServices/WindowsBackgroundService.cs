@@ -1,23 +1,21 @@
-using GLPIAgentUpdater.Enums.Windows;
-using GLPIAgentUpdater.Services.Interfaces;
+using GLPIAgentUpdater.Enums;
+using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Interfaces.Windows;
 using GLPIAgentUpdater.Services.Windows;
 using System.Diagnostics;
 
-namespace GLPIAgentUpdater.Services
+namespace GLPIAgentUpdater.Services.BackgroundServices
 {
     public class WindowsBackgroundService : BackgroundService
     {
-        private readonly ILogger<WindowsBackgroundService> _logger;
         private readonly IRegistry _registry;
         private IServiceProvider _serviceProvider;
 
         public WindowsBackgroundService(
-            ILogger<WindowsBackgroundService> logger,
             IRegistry registry,
             IServiceProvider serviceProvider
         )
         {
-            _logger = logger;
             _registry = registry;
             _serviceProvider = serviceProvider;
         }
@@ -28,7 +26,7 @@ namespace GLPIAgentUpdater.Services
             int mode = (int)_registry.Get("Mode");
             switch (mode)
             {
-                case (int)Mode.Github:                
+                case (int)Mode.Github:
                     checker = _serviceProvider.GetRequiredService<GithubService>();
                     break;
                 case (int)Mode.SMB:
@@ -43,7 +41,7 @@ namespace GLPIAgentUpdater.Services
             {
                 await checker.Run(stoppingToken);
             }
-            
+
 
         }
     }

@@ -1,4 +1,4 @@
-﻿using GLPIAgentUpdater.Services.Interfaces;
+﻿using GLPIAgentUpdater.Interfaces.Windows;
 using System.Diagnostics;
 
 namespace GLPIAgentUpdater.Services.Windows

@@ -1,4 +1,4 @@
-﻿namespace GLPIAgentUpdater.Services.Interfaces
+﻿namespace GLPIAgentUpdater.Interfaces.Windows
 {
     public interface IRegistry
     {

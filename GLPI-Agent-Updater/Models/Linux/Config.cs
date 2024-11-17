@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GLPIAgentUpdater.Enums.Windows
+namespace GLPIAgentUpdater.Models.Linux
 {
-    internal enum Mode
+    internal class Config
     {
-        Github = 0,
-        SMB = 1,
-        GLPI = 2,
+        public int CheckInterval {  get; set; }
+
     }
 }

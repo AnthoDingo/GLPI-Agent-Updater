@@ -1,4 +1,5 @@
-﻿using GLPIAgentUpdater.Services.Interfaces;
+﻿using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Interfaces.Windows;
 
 namespace GLPIAgentUpdater.Services.Windows
 {

@@ -1,16 +1,34 @@
 ﻿using GLPIAgentUpdater.Models.Linux;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GLPIAgentUpdater.Services.Linux
 {
     internal class PackagesService
     {
         public List<Package> GetInstalledAgents()
+        {
+
+            string debPath = "/usr/bin/dpkg"; 
+            string rpmPath = "/usr/bin/rpm";
+
+            bool isDeb = File.Exists(debPath); 
+            bool isRpm = File.Exists(rpmPath);
+
+            if (isDeb)
+            {
+                return GetInstalledDeb();
+            }
+            else if (isRpm)
+            {
+                return GetInstalledRpm();
+            }
+            else
+            {
+                return new List<Package>();
+            }
+        }
+
+        private List<Package> GetInstalledDeb()
         {
             List<Package> packages = new List<Package>();
 
@@ -44,6 +62,11 @@ namespace GLPIAgentUpdater.Services.Linux
             process.WaitForExit();
 
             return packages;
+        }
+
+        private List<Package> GetInstalledRpm()
+        {
+            return new List<Package>();
         }
     }
 }

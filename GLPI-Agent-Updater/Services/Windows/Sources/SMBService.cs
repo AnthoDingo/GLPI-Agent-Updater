@@ -1,5 +1,6 @@
-﻿using GLPIAgentUpdater.Models.Windows;
-using GLPIAgentUpdater.Services.Interfaces;
+﻿using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Interfaces.Windows;
+using GLPIAgentUpdater.Models.Windows;
 using System.Text.RegularExpressions;
 
 namespace GLPIAgentUpdater.Services.Windows
