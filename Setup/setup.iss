@@ -41,27 +41,48 @@ Source: ".\src\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion recurses
 
 [Registry]
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: none; Flags: createvalueifdoesntexist uninsdeletekey
-Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "CheckInterval"; ValueData: "60"; Flags: createvalueifdoesntexist
-Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "Github"; ValueData: "{code:isGithub|}"; Flags: createvalueifdoesntexist
-Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "GithubDelay"; ValueData: "0"; Flags: createvalueifdoesntexist
+Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "Mode"; ValueData: "{code:GetMode|}"; Flags: createvalueifdoesntexist
+Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "Version"; ValueData: "{code:GetVersion|}"; Flags: createvalueifdoesntexist
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: string; ValueName: "Server"; ValueData: "{code:GetServer|}"; Flags: createvalueifdoesntexist
+Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "CheckInterval"; ValueData: "120"; Flags: createvalueifdoesntexist
 
 [Code]
 var
   SourcePage: TWizardPage;
   GithubButton: TNewRadioButton;
   ServerButton: TNewRadioButton;
+  GlpiButton: TNewRadioButton;
   ServerAddress: TEdit;
+  VersionPage: TWizardPage;
+  VersionEdit: TEdit;
   ResultInstallCode: Integer;
   ResultStartCode: Integer;
   ResultUninstallCode: Integer;
   GithubParam: String;
   ServerParam: String;
+  PathParam: String;
+  VersionParam: String;
 
 procedure RadioButtonClick(Sender: TObject);
 begin
   ServerAddress.Visible := ServerButton.Checked; // Active le champ de saisie si 'Server' est s�lectionn�
 end;
+
+
+function GetVersion(Param: String): String;
+begin
+  VersionParam := ExpandConstant('{param:VERSION|}');
+
+  if VersionParam <> '' then
+  begin
+    Result := VersionParam;
+  end
+  else  
+  begin
+    Result := 'Latest'
+  end ;
+end;
+
 
 procedure InitializeWizard;
 begin
@@ -79,16 +100,33 @@ begin
   ServerButton.Parent := SourcePage.Surface;
   ServerButton.Top := GithubButton.Top + GithubButton.Height + 8;
   ServerButton.Left := 8;
-  ServerButton.Caption := 'GLPI Server';
+  ServerButton.Caption := 'Share Server';
   ServerButton.OnClick := @RadioButtonClick;
 
+  GlpiButton := TNewRadioButton.Create(SourcePage);
+  GlpiButton.Parent := SourcePage.Surface;
+  GlpiButton.Top := ServerButton.Top + ServerButton.Height + 8;
+  GlpiButton.Left := 8;
+  GlpiButton.Caption := 'GLPI Server';
+  GlpiButton.OnClick := @RadioButtonClick;
+  GlpiButton.Visible := False;
+  
   ServerAddress := TEdit.Create(SourcePage);
   ServerAddress.Parent := SourcePage.Surface;
-  ServerAddress.Top := ServerButton.Top + ServerButton.Height + 8;
+  ServerAddress.Top := GlpiButton.Top + GlpiButton.Height + 8;
   ServerAddress.Left := 8;
   ServerAddress.Width := SourcePage.SurfaceWidth - 16; // Ajuste la largeur du champ de saisie � la largeur de la page
   ServerAddress.Visible := False;
+  
+  // Création de la nouvelle page personnalisée
+  VersionPage := CreateCustomPage(wpSelectDir, 'Version', 'Please specify target version');
 
+  VersionEdit := TEdit.Create(VersionPage);
+  VersionEdit.Parent := VersionPage.Surface;
+  VersionEdit.Top := 8;
+  VersionEdit.Left := 8;
+  VersionEdit.Width := VersionPage.SurfaceWidth - 16;
+  VersionEdit.Text := GetVersion('VERSION');
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -108,37 +146,36 @@ begin
 end;
 
 
-function isGithub(Param: String): String;
+function GetMode(Param: String): String;
 begin  
   GithubParam := ExpandConstant('{param:GITHUB|}');
   ServerParam := ExpandConstant('{param:SERVER|}');
 
   if (GithubButton.Checked) or (GithubParam <> '') then
   begin
-     Result := '1';  
+     Result := '0';  
+  end
+  else if (ServerButton.Checked) or (ServerParam <> '') then
+  begin
+    Result := '1';
   end
   else
   begin
-    Result := '0';
+    Result := '2';
   end;
-
-  if ServerParam <> '' then
-  begin
-    Result := '0';
-  end;
+  
 end;
 
 function GetServer(Param: String): String;
 begin
-  ServerParam := ExpandConstant('{param:SERVER|}');
+  PathParam := ExpandConstant('{param:PATH|}');
 
-  if ServerParam <> '' then
+  if PathParam <> '' then
   begin
-    Result := ServerParam;
+    Result := PathParam;
   end
   else
   begin
     Result := ServerAddress.Text
   end ;
-
 end;
