@@ -16,12 +16,18 @@ This tools allow to auto update GLPI Agent throught Github official Release or f
             - [X] Windows
             - [ ] Linux
             - [ ] MacOS
-    - Github
-        - [X] Update official release
-    - SMB Share
-        - [X] Update from network share
-    - GLPI Server
-        - [ ] Get package from server
+    - Github (Update official release)
+        - [X] Windows
+        - [ ] Linux
+        - [ ] MacOS        
+    - SMB Share (Update from network share)
+        - [X] Windows
+        - [ ] Linux
+        - [ ] MacOS
+    - GLPI Server (Get package from server)
+        - [ ] Windows
+        - [ ] Linux
+        - [ ] MacOS
 - Server (on GLPI server)
     - [ ] Get glpiinventory packages
     - [ ] Define package for each plateform
