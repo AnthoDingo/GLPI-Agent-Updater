@@ -11,16 +11,17 @@ This tools allow to auto update GLPI Agent throught Github official Release or f
 - Client
     - Global
         - [X] Set time bewteen each scan
+        - [X] Targeted version
         - [ ] Multi-plateform support. 
             - [X] Windows
             - [ ] Linux
             - [ ] MacOS
     - Github
         - [X] Update official release
-        - [X] Delayed installation
-    - GLPI server
-        - [ ] Get package
-        - [ ] Update from package
+    - SMB Share
+        - [X] Update from network share
+    - GLPI Server
+        - [ ] Get package from server
 - Server (on GLPI server)
     - [ ] Get glpiinventory packages
     - [ ] Define package for each plateform
