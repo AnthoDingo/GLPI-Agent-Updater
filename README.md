@@ -11,7 +11,10 @@ This tools allow to auto update GLPI Agent throught Github official Release or f
 - Client
     - Global
         - [X] Set time bewteen each scan
-        - [ ] Multi-plateform support. Currently only Windows with Github
+        - [ ] Multi-plateform support. 
+            - [X] Windows
+            - [ ] Linux
+            - [ ] MacOS
     - Github
         - [X] Update official release
         - [X] Delayed installation
@@ -29,7 +32,9 @@ By launching setup with the graphical, you will have options between Github and 
 
 ### Command line
 ```cmd
-GLPI_Agent_Updater_{version}_x64.exe /VERYSILENT /GITHUB
+GLPI_Agent_Updater_{version}_x64.exe /VERYSILENT /MODE=0 [/VERSION="Latest"]
+
+GLPI_Agent_Updater_{version}_x64.exe /VERYSILENT /MODE=1 /PATH="\\server\sharedfolder" [/VERSION="Latest"]
 ```
 
 ## FAQ

@@ -42,7 +42,7 @@ Source: ".\src\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion recurses
 [Registry]
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: none; Flags: createvalueifdoesntexist uninsdeletekey
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "Mode"; ValueData: "{code:GetMode|}"; Flags: createvalueifdoesntexist
-Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "Version"; ValueData: "{code:GetVersion|}"; Flags: createvalueifdoesntexist
+Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: string; ValueName: "Version"; ValueData: "{code:GetVersion|}"; Flags: createvalueifdoesntexist
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: string; ValueName: "Server"; ValueData: "{code:GetServer|}"; Flags: createvalueifdoesntexist
 Root: "HKLM64"; Subkey: "SOFTWARE\GLPI-Agent-Updater"; ValueType: dword; ValueName: "CheckInterval"; ValueData: "120"; Flags: createvalueifdoesntexist
 
@@ -58,8 +58,7 @@ var
   ResultInstallCode: Integer;
   ResultStartCode: Integer;
   ResultUninstallCode: Integer;
-  GithubParam: String;
-  ServerParam: String;
+  ModeParam: String;
   PathParam: String;
   VersionParam: String;
 
@@ -68,18 +67,40 @@ begin
   ServerAddress.Visible := ServerButton.Checked; // Active le champ de saisie si 'Server' est s�lectionn�
 end;
 
+function GetCommandLineParam(Param: String): String;
+var
+  i: Integer;
+  ParamName, ParamValue: String;
+begin
+  Result := '';
+  ParamName := '/' + Param + '=';
+
+  for i := 1 to ParamCount do
+  begin
+    if Pos(ParamName, ParamStr(i)) = 1 then
+    begin
+      ParamValue := Copy(ParamStr(i), Length(ParamName) + 1, MaxInt);
+      Result := ParamValue;
+      Exit;
+    end;
+  end;
+end;
 
 function GetVersion(Param: String): String;
 begin
-  VersionParam := ExpandConstant('{param:VERSION|}');
+  VersionParam := GetCommandLineParam('VERSION');
 
   if VersionParam <> '' then
   begin
     Result := VersionParam;
   end
-  else  
+  else if VersionEdit.Text = '' then
   begin
     Result := 'Latest'
+  end
+  else
+  begin
+    Result := VersionEdit.Text
   end ;
 end;
 
@@ -93,7 +114,6 @@ begin
   GithubButton.Top := 8;
   GithubButton.Left := 8;
   GithubButton.Caption := 'Github';
-  GithubButton.Checked := True; // Par d�faut, 'Github' est s�lectionn�
   GithubButton.OnClick := @RadioButtonClick;
   
   ServerButton := TNewRadioButton.Create(SourcePage);
@@ -148,14 +168,13 @@ end;
 
 function GetMode(Param: String): String;
 begin  
-  GithubParam := ExpandConstant('{param:GITHUB|}');
-  ServerParam := ExpandConstant('{param:SERVER|}');
+  ModeParam := GetCommandLineParam('MODE');
 
-  if (GithubButton.Checked) or (GithubParam <> '') then
+  if (GithubButton.Checked) or (ModeParam = '0') then
   begin
      Result := '0';  
   end
-  else if (ServerButton.Checked) or (ServerParam <> '') then
+  else if (ServerButton.Checked) or (ModeParam = '1') then
   begin
     Result := '1';
   end
@@ -168,7 +187,7 @@ end;
 
 function GetServer(Param: String): String;
 begin
-  PathParam := ExpandConstant('{param:PATH|}');
+  PathParam := GetCommandLineParam('PATH');
 
   if PathParam <> '' then
   begin
