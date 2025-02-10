@@ -26,13 +26,14 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
             switch (mode)
             {
                 case (int)Mode.Github:
-                    checker = _serviceProvider.GetRequiredService<GithubService>();
+                    checker = _serviceProvider.GetRequiredService<GithubSource>();
                     break;
                 case (int)Mode.SMB:
-                    checker = _serviceProvider.GetRequiredService<SMBService>();
+                    checker = _serviceProvider.GetRequiredService<SMBSource>();
                     break;
                 case (int)Mode.GLPI:
-                    checker = _serviceProvider.GetRequiredService<GLPIService>();
+                    // checker = _serviceProvider.GetRequiredService<GLPISource>();
+                    throw new NotImplementedException();
                     break;
             }
 
@@ -40,8 +41,6 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
             {
                 await checker.Run(stoppingToken);
             }
-
-
         }
     }
 }

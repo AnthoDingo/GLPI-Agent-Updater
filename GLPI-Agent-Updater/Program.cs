@@ -3,6 +3,7 @@ using GLPIAgentUpdater.Interfaces.MacOS;
 using GLPIAgentUpdater.Interfaces.Windows;
 using GLPIAgentUpdater.Services.BackgroundServices;
 using GLPIAgentUpdater.Services.MacOS;
+using GLPIAgentUpdater.Services.Shared;
 using GLPIAgentUpdater.Statics;
 
 #if OS_WINDOWS
@@ -84,6 +85,10 @@ namespace GLPIAgentUpdater
             builder = Host.CreateApplicationBuilder(args);
             IServiceCollection services = builder.Services;
 
+            services
+                .AddSingleton<GithubService>()
+                .AddSingleton<SMBService>();
+            
             #if OS_WINDOWS
             services
                 .AddHostedService<WindowsBackgroundService>()
@@ -98,9 +103,8 @@ namespace GLPIAgentUpdater
                 .AddSingleton<IEventManager, EventManager>()
                 .AddSingleton<IRegistry, RegistryService>()
                 .AddSingleton<IInstaller, InstallerService>()
-                .AddSingleton<GithubService>()
-                .AddSingleton<SMBService>()
-                .AddSingleton<GLPIService>()
+                .AddSingleton<GithubSource>()
+                .AddSingleton<SMBSource>();
             #endif
 
             #if OS_LINUX
@@ -120,7 +124,8 @@ namespace GLPIAgentUpdater
                 .AddSingleton<IEventManager, LogManager>()
                 .AddSingleton<IPlist, PlistService>()
                 .AddSingleton<IInstaller, InstallerService>()
-                .AddSingleton<GithubService>();
+                .AddSingleton<GithubSource>()
+                .AddSingleton<SMBSource>();
             
             #endif
 

@@ -26,10 +26,11 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
             switch (mode)
             {
                 case (int)Mode.Github:
-                    checker = _serviceProvider.GetRequiredService<GithubService>();
+                    checker = _serviceProvider.GetRequiredService<GithubSource>();
                     break;
                 case (int)Mode.SMB :
                     throw new NotImplementedException();
+                    // checker = _serviceProvider.GetRequiredService<SMBSource>();
                     break;
                 case (int)Mode.GLPI:
                     throw new NotImplementedException();

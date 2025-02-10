@@ -3,15 +3,15 @@ using GLPIAgentUpdater.Interfaces.Windows;
 
 namespace GLPIAgentUpdater.Services.Windows
 {
-    internal class GLPIService : IChecker
+    internal class GLPISource : IChecker
     {
 
-        private readonly ILogger<GithubService> _logger;
+        private readonly ILogger<GithubSource> _logger;
         private readonly IRegistry _registry;
 
         private Version _agentVersion;
 
-        public GLPIService(ILogger<GithubService> logger, IRegistry registry)
+        public GLPISource(ILogger<GithubSource> logger, IRegistry registry)
         {
             _logger = logger;
             _registry = registry;

@@ -1,4 +1,4 @@
-﻿namespace GLPIAgentUpdater.Models.Windows
+﻿namespace GLPIAgentUpdater.Models
 {
     internal class FileVersion
     {

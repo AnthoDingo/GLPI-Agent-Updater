@@ -55,9 +55,9 @@ namespace GLPIAgentUpdater.Services.MacOS
             {
                 File.Delete(filePath);
             }
-            catch (DirectoryNotFoundException ex)
+            catch (FileNotFoundException ex)
             {
-
+                _em.Warning($"File not found {filePath}");
             }
             catch (IOException ex)
             {
@@ -105,7 +105,7 @@ namespace GLPIAgentUpdater.Services.MacOS
         {
             if (!Directory.Exists(path))
             {
-                throw new FileNotFoundException();
+                throw new DirectoryNotFoundException();
             }
             
             Dictionary<string, string> files = new Dictionary<string, string>();
@@ -135,7 +135,7 @@ namespace GLPIAgentUpdater.Services.MacOS
         {
             if (!Directory.Exists(path))
             {
-                throw new FileNotFoundException();
+                throw new DirectoryNotFoundException();
             }
             
             foreach (KeyValuePair<string, string> file in files)
