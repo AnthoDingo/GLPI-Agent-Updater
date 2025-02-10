@@ -27,16 +27,24 @@
     <SelfContained>false</SelfContained>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'GLPI_agent_updater' " />
   <ItemGroup>
-    <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
+    <PackageReference Include="Mono.Unix" Version="7.1.0-final.1.21458.1" />
     <PackageReference Include="Octokit" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\MacOS\" />
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <PackageReference Include="ini-parser" Version="2.5.2" />
   </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <PackageReference Include="plist-cil" Version="2.2.0" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Content Update="appsettings.Development.json">

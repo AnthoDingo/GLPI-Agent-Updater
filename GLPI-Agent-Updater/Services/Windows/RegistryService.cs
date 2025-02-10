@@ -1,4 +1,5 @@
-﻿using GLPIAgentUpdater.Interfaces.Windows;
+﻿using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Interfaces.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
