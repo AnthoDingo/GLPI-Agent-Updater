@@ -1,32 +1,31 @@
 using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
-using GLPIAgentUpdater.Interfaces.MacOS;
-using GLPIAgentUpdater.Services.MacOS;
+using GLPIAgentUpdater.Services.Shared;
 
 namespace GLPIAgentUpdater.Services.BackgroundServices
 {
     public class MacOSBackgroundService : BackgroundService
     {
-        private readonly IPlist _plist;
+        private readonly IConfig _config;
         private IServiceProvider _serviceProvider;
 
         public MacOSBackgroundService(
-            IPlist plist,
+            IConfig config,
             IServiceProvider serviceProvider
         )
         {
-            _plist = plist;
+            _config = config;
             _serviceProvider = serviceProvider;
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             IChecker? checker = null;
-            int mode = (int)_plist.Get("Mode");
+            int mode = (int)_config.Get("Mode");
             switch (mode)
             {
                 case (int)Mode.Github:
-                    checker = _serviceProvider.GetRequiredService<GithubSource>();
+                    checker = _serviceProvider.GetRequiredService<GithubService>();
                     break;
                 case (int)Mode.SMB :
                     throw new NotImplementedException();
