@@ -74,7 +74,7 @@ namespace GLPIAgentUpdater.Services.MacOS
                 _em.Info($"New GLPI Agent available. Current installed version : {agentVersion}. Available version : {onlineVersion}");
                 try
                 {
-                    string filePath = await _github.DownloadRelease(onlineRelease, Path.GetTempPath(), Extension.pkg);
+                    string filePath = await _github.DownloadRelease(onlineRelease, Path.GetTempPath());
                     _em.Info("Installing new version");
                     await _installer.Install(filePath);
                     _installer.CleanUp(filePath);

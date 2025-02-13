@@ -124,7 +124,7 @@ namespace GLPIAgentUpdater
                 .AddSingleton<IEventManager, LogManager>()
                 .AddSingleton<IPlist, PlistService>()
                 .AddSingleton<IInstaller, InstallerService>()
-                .AddSingleton<GithubSource>()
+                .AddSingleton<IRunner, GithubService>()
                 .AddSingleton<SMBSource>();
             
             #endif

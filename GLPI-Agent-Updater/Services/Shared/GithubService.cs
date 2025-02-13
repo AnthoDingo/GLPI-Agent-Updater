@@ -1,20 +1,92 @@
 using GLPIAgentUpdater.Interfaces;
 using Octokit;
 using System.Net;
-using GLPIAgentUpdater.Enums;
 
-namespace GLPIAgentUpdater.Services.Shared
+namespace GLPIAgentUpdater.Services.Shared 
 {
-    internal class GithubService
+    internal class GithubService:  IRunner
     {
         private IEventManager _em;
+        private readonly IConfig _config;
         private readonly GitHubClient _client;
+        private readonly IInstaller _installer;
     
-        public GithubService(IEventManager em)
+        private readonly int _interval;
+        
+        public GithubService(IEventManager em, IConfig config, IInstaller installer)
         {
             _em = em;
+            _config = config;
             _client = new GitHubClient(new ProductHeaderValue("GLPI-Agent-Updater"));
+            _installer = installer;
+            
+            try
+            {
+                _interval = (int)_config.Get("CheckInterval") * 60 * 1000;
+            }
+            catch (Exception ex)
+            {
+                _interval = 60 * 60 * 1000;
+            }
         }
+
+        #region Runner
+
+        public async Task Run(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                _em.Info("Checking Github version");
+
+                Release onlineRelease = null;
+                if (((string)_config.Get("Version")).Equals("Latest"))
+                {
+                    onlineRelease = await this.GetLatest();
+
+                }
+                else
+                {
+                    onlineRelease = await this.GetTarget((string)_config.Get("Version"));
+                }
+
+                if (onlineRelease == null)
+                {
+                    _em.Warning("Can't find online version from Github.");
+                    await Task.Delay(_interval, cancellationToken);
+                    continue;
+                }
+
+                Version onlineVersion;
+                Version.TryParse(onlineRelease.TagName, out onlineVersion);
+                Version agentVersion = _config.GetAgentVersion();
+                if (onlineVersion == agentVersion || onlineVersion < agentVersion)
+                {
+                    _em.Info("GLPI Agent already up to date");
+                    await Task.Delay(_interval, cancellationToken);
+                    continue;
+                }
+
+                _em.Info(
+                    $"New GLPI Agent available. Current installed version : {agentVersion}. Available version : {onlineVersion}");
+                try
+                {
+                    string filePath = await this.DownloadRelease(onlineRelease, Path.GetTempPath());
+                    _em.Info("Installing new version");
+                    await _installer.Install(filePath);
+                    _installer.CleanUp(filePath);
+                }
+                catch (Exception ex)
+                {
+                    _em.Error($"Failed to install version {onlineRelease.TagName}");
+                }
+
+                await Task.Delay(_interval, cancellationToken);
+            }
+        }
+
+        #endregion
+        
+        #region Functions to get release
 
         internal async Task<IReadOnlyList<Release>> GetAvailableVersion()
         {
@@ -66,21 +138,22 @@ namespace GLPIAgentUpdater.Services.Shared
             return releases.FirstOrDefault(r => r.TagName.Equals(target.ToString()));
         }
 
-        internal async Task<string> DownloadRelease(Release release, string path, Extension extension)
+        internal async Task<string> DownloadRelease(Release release, string path)
         {
             _em.Info($"Downloading GLPI Agent {release.TagName} from Github");
-
+            
             ReleaseAsset asset = null;
-            switch (extension)
-            {
-                default:
-                case Extension.msi:
-                    
-                    break;
-                case Extension.pkg:
-                    asset = release.Assets.First(a => a.Name.Equals($"GLPI-Agent-{release.TagName}_x86_64.pkg"));
-                    break;
-            }
+            #if OS_WINDOWS
+            
+            #endif
+            
+            #if OS_MAC
+            asset = release.Assets.First(a => a.Name.Equals($"GLPI-Agent-{release.TagName}_x86_64.pkg"));
+            #endif
+            
+            #if OS_LINUX
+            
+            #endif
             
             string filePath = Path.Join(path, asset.Name);
             Uri downloadUrl = new Uri(asset.BrowserDownloadUrl);
@@ -109,5 +182,8 @@ namespace GLPIAgentUpdater.Services.Shared
 
             return filePath;
         }
+
+        #endregion
+        
     }
 }

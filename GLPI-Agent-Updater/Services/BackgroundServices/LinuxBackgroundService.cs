@@ -1,7 +1,6 @@
 ﻿
 using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
-using GLPIAgentUpdater.Interfaces.Linux;
 
 namespace GLPIAgentUpdater.Services.BackgroundServices
 {
@@ -20,7 +19,7 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
         {
 
             IChecker? checker = null;
-            int mode = !String.IsNullOrEmpty(_config.GetValue("Mode")) ? Convert.ToInt32(_config.GetValue("Mode")) : 0;
+            int mode = !String.IsNullOrEmpty((string)_config.Get("Mode")) ? Convert.ToInt32(_config.Get("Mode")) : 0;
             switch (mode)
             {
                 case (int)Mode.Github:
