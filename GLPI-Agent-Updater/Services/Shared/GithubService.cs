@@ -4,7 +4,7 @@ using System.Net;
 
 namespace GLPIAgentUpdater.Services.Shared 
 {
-    internal class GithubService:  IRunner
+    internal class GithubService: IChecker
     {
         private IEventManager _em;
         private readonly IConfig _config;
@@ -154,6 +154,11 @@ namespace GLPIAgentUpdater.Services.Shared
             #if OS_LINUX
             
             #endif
+
+            if (asset == null)
+            {
+                throw new NotImplementedException();
+            }
             
             string filePath = Path.Join(path, asset.Name);
             Uri downloadUrl = new Uri(asset.BrowserDownloadUrl);

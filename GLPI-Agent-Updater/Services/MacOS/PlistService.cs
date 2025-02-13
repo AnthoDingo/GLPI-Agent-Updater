@@ -1,10 +1,9 @@
 using Claunia.PropertyList;
-using GLPIAgentUpdater.Interfaces.MacOS;
-using System.IO;
+using GLPIAgentUpdater.Interfaces;
 
 namespace GLPIAgentUpdater.Services.MacOS
 {
-    internal class PlistService : IPlist
+    internal class PlistService : IConfig
     {
         private readonly ILogger<PlistService> _logger;
 

@@ -9,7 +9,7 @@ namespace GLPIAgentUpdater.Services.MacOS
     internal class SMBSource : IChecker
     {
         private IEventManager _em;
-        private readonly IPlist _plist;
+        private readonly IConfig _plist;
         private readonly SMBService _smb;
         private readonly IInstaller _installer;
         
@@ -18,7 +18,7 @@ namespace GLPIAgentUpdater.Services.MacOS
         public SMBSource
         (
             IEventManager eventManager,
-            IPlist plist,
+            IConfig plist,
             SMBService smbService,
             IInstaller installer
         )
