@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-GLPI_agent_updater-77a43f3e-b4bc-4e81-a926-54118488ee97</UserSecretsId>
     <RootNamespace>GLPIAgentUpdater</RootNamespace>
-    <AssemblyVersion>1.0.0.100</AssemblyVersion>
-    <FileVersion>1.0.0.100</FileVersion>
+    <AssemblyVersion>1.0.1.100</AssemblyVersion>
+    <FileVersion>1.0.1.100</FileVersion>
     <DebugType>embedded</DebugType>
     <PublishSingleFile>true</PublishSingleFile>
 	<RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
