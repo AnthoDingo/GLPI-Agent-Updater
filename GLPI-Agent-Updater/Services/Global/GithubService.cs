@@ -2,7 +2,7 @@ using GLPIAgentUpdater.Interfaces;
 using Octokit;
 using System.Net;
 
-namespace GLPIAgentUpdater.Services.Shared 
+namespace GLPIAgentUpdater.Services.Global 
 {
     internal class GithubService: IChecker
     {
@@ -90,11 +90,20 @@ namespace GLPIAgentUpdater.Services.Shared
 
         internal async Task<IReadOnlyList<Release>> GetAvailableVersion()
         {
-            IReadOnlyList<Release> releases = await _client.Repository.Release.GetAll("glpi-project", "glpi-agent");
-            if (releases.Count == 0)
+            IReadOnlyList<Release> releases = null;
+            try
             {
-                _em.Warning("No release available from Github");
+                releases = await _client.Repository.Release.GetAll("glpi-project", "glpi-agent");
+                if (releases.Count == 0)
+                {
+                    _em.Warning("No release available from Github");
+                }
             }
+            catch (Exception ex)
+            {
+                _em.Error(ex.Message);
+            }
+            
             return releases;
         }
 
@@ -105,7 +114,7 @@ namespace GLPIAgentUpdater.Services.Shared
         }
         internal Release GetLatest(IReadOnlyList<Release> releases)
         {
-            if (releases.Count == 0)
+            if (releases.Count > 0)
             {
                 return releases[0];
             }
@@ -141,20 +150,21 @@ namespace GLPIAgentUpdater.Services.Shared
         internal async Task<string> DownloadRelease(Release release, string path)
         {
             _em.Info($"Downloading GLPI Agent {release.TagName} from Github");
-            
-            ReleaseAsset asset = null;
+
+            string assetFilter = null;
             #if OS_WINDOWS
-            
+                assetFilter = $"GLPI-Agent-{release.TagName}-x64.msi";
             #endif
             
             #if OS_MAC
-            asset = release.Assets.First(a => a.Name.Equals($"GLPI-Agent-{release.TagName}_x86_64.pkg"));
+            assetFilter = $"GLPI-Agent-{release.TagName}_x86_64.pkg";
             #endif
             
             #if OS_LINUX
             
             #endif
-
+            
+            ReleaseAsset asset = release.Assets.First(a => a.Name.Equals(assetFilter));
             if (asset == null)
             {
                 throw new NotImplementedException();

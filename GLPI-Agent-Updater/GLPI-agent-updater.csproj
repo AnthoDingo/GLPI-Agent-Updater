@@ -32,7 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
     <PackageReference Include="Mono.Unix" Version="7.1.0-final.1.21458.1" />
-    <PackageReference Include="Octokit" Version="13.0.1" />
+    <PackageReference Include="Octokit" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
@@ -50,10 +50,26 @@
     <Content Update="appsettings.Development.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+    <Content Remove="Services\Linux\**" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Folder Include="Interfaces\Linux\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Remove="Services\Linux\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Services\Linux\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Remove="Services\Linux\**" />
   </ItemGroup>
 </Project>

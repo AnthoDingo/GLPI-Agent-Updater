@@ -1,16 +1,17 @@
 using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
 using GLPIAgentUpdater.Interfaces.Windows;
+using GLPIAgentUpdater.Services.Global;
 using GLPIAgentUpdater.Services.Windows;
 
-namespace GLPIAgentUpdater.Services.BackgroundServices
+namespace GLPIAgentUpdater.Services.Windows
 {
-    public class WindowsBackgroundService : BackgroundService
+    public class BackgroundService : Microsoft.Extensions.Hosting.BackgroundService
     {
         private readonly IRegistry _registry;
         private IServiceProvider _serviceProvider;
 
-        public WindowsBackgroundService(
+        public BackgroundService(
             IRegistry registry,
             IServiceProvider serviceProvider
         )
@@ -26,7 +27,7 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
             switch (mode)
             {
                 case (int)Mode.Github:
-                    checker = _serviceProvider.GetRequiredService<GithubSource>();
+                    checker = _serviceProvider.GetRequiredService<GithubService>();
                     break;
                 case (int)Mode.SMB:
                     checker = _serviceProvider.GetRequiredService<SMBSource>();

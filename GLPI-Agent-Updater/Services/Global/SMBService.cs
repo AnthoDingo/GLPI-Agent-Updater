@@ -4,7 +4,7 @@ using GLPIAgentUpdater.Models;
 using System.Text.RegularExpressions;
 using DirectoryNotFoundException = System.IO.DirectoryNotFoundException;
 
-namespace GLPIAgentUpdater.Services.Shared
+namespace GLPIAgentUpdater.Services.Global
 {
     internal class SMBService
     {
@@ -15,8 +15,10 @@ namespace GLPIAgentUpdater.Services.Shared
             _em = em;
         }
         
-        internal async Task<IEnumerable<FileVersion>> GetAvailableFiles(string path, Extension extension)
+        internal async Task<IEnumerable<FileVersion>> GetAvailableFiles(string path)
         {
+            Extension extension = GetExtension();
+            
             if (!Directory.Exists($"{path}")) {
                 _em.Error($@"Path {path} cannot be found.");
                 throw new DirectoryNotFoundException();
@@ -35,7 +37,7 @@ namespace GLPIAgentUpdater.Services.Shared
                     return filesVersion;
                 }
     
-                filesVersion = GetFiles(files, extension);
+                filesVersion = GetFiles(files);
             }
             catch (Exception ex) {
                 _em.Error("Failed to list files");
@@ -45,11 +47,11 @@ namespace GLPIAgentUpdater.Services.Shared
             return filesVersion;
         }
         
-        private IEnumerable<FileVersion> GetFiles(IEnumerable<FileInfo> files, Extension extension)
+        private IEnumerable<FileVersion> GetFiles(IEnumerable<FileInfo> files)
         {
             List<FileVersion> result = new List<FileVersion>();
             Regex regex = null;
-            switch (extension)
+            switch (GetExtension())
             {
                 default:
                 case Extension.msi:
@@ -79,9 +81,9 @@ namespace GLPIAgentUpdater.Services.Shared
             return result;
         }
 
-        internal async Task<FileVersion> GetLatest(string path, Extension extension)
+        internal async Task<FileVersion> GetLatest(string path)
         {
-            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path, extension);
+            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path);
             return GetLatest(smbFiles);
         }
         internal FileVersion GetLatest(IEnumerable<FileVersion> files)
@@ -89,9 +91,9 @@ namespace GLPIAgentUpdater.Services.Shared
             return files.OrderBy(f => f.Version).Last();
         }
 
-        internal async Task<FileVersion> GetTarget(string path, Extension extension, string target)
+        internal async Task<FileVersion> GetTarget(string path, string target)
         {
-            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path, extension);
+            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path);
             return GetTarget(smbFiles, target);
         }
         internal FileVersion GetTarget(IEnumerable<FileVersion> files, string target)
@@ -101,14 +103,29 @@ namespace GLPIAgentUpdater.Services.Shared
             return GetTarget(files, targetVersion);
         }
 
-        internal async Task<FileVersion> GetTarget(string path, Extension extension, Version target)
+        internal async Task<FileVersion> GetTarget(string path, Version target)
         {
-            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path, extension);
+            IEnumerable<FileVersion> smbFiles = await GetAvailableFiles(path);
             return GetTarget(smbFiles, target);
         }
         internal FileVersion GetTarget(IEnumerable<FileVersion> files, Version target)
         {
             return files.Where(f => f.Version == target).FirstOrDefault();
+        }
+
+        private Extension GetExtension()
+        {
+            #if OS_WINDOWS
+                return Extension.Msi;
+            #endif
+                                    
+            #if OS_MAC
+                return Extension.pkg;
+            #endif
+
+            #if OS_LINUX
+
+            #endif
         }
     }
 }

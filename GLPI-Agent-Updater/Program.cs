@@ -1,13 +1,10 @@
 using GLPIAgentUpdater.Interfaces;
-using GLPIAgentUpdater.Interfaces.MacOS;
-using GLPIAgentUpdater.Interfaces.Windows;
-using GLPIAgentUpdater.Services.BackgroundServices;
-using GLPIAgentUpdater.Services.MacOS;
-using GLPIAgentUpdater.Services.Shared;
+using GLPIAgentUpdater.Services.Global;
 using GLPIAgentUpdater.Statics;
 
 #if OS_WINDOWS
 using GLPIAgentUpdater.Services.Windows;
+using BackgroundService = GLPIAgentUpdater.Services.Windows.BackgroundService;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Logging.EventLog;
 #endif
@@ -18,6 +15,7 @@ using Microsoft.Extensions.Logging.EventLog;
 
 #if OS_MAC
 using GLPIAgentUpdater.Services.MacOS;
+using BackgroundService = GLPIAgentUpdater.Services.MacOS.BackgroundService;
 using Mono.Unix;
 using Mono.Unix.Native;
 #endif
@@ -118,7 +116,7 @@ namespace GLPIAgentUpdater
             }
 
             services
-                .AddHostedService<MacOSBackgroundService>();
+                .AddHostedService<BackgroundService>();
             
             services
                 .AddSingleton<IEventManager, LogManager>()

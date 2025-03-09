@@ -2,7 +2,7 @@ using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
 using GLPIAgentUpdater.Interfaces.MacOS;
 using GLPIAgentUpdater.Models;
-using GLPIAgentUpdater.Services.Shared;
+using GLPIAgentUpdater.Services.Global;
 
 namespace GLPIAgentUpdater.Services.MacOS
 {
@@ -54,11 +54,11 @@ namespace GLPIAgentUpdater.Services.MacOS
                 FileVersion smbFile;
                 if (version.Equals("Latest"))
                 {
-                    smbFile = await _smb.GetLatest(server, Extension.pkg);
+                    smbFile = await _smb.GetLatest(server);
                 }
                 else
                 {
-                    smbFile = await _smb.GetTarget(server, Extension.pkg, version);
+                    smbFile = await _smb.GetTarget(server, version);
                 }
 
                 if (smbFile == null)

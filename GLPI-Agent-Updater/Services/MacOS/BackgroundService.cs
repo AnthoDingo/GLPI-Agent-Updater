@@ -1,32 +1,37 @@
-﻿
 using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
+using GLPIAgentUpdater.Services.Global;
 
-namespace GLPIAgentUpdater.Services.BackgroundServices
+namespace GLPIAgentUpdater.Services.MacOS
 {
-    internal class LinuxBackgroundService : BackgroundService
+    public class BackgroundService : Microsoft.Extensions.Hosting.BackgroundService
     {
         private readonly IConfig _config;
         private IServiceProvider _serviceProvider;
 
-        public LinuxBackgroundService(IConfig config, IServiceProvider serviceProvider)
+        public BackgroundService(
+            IConfig config,
+            IServiceProvider serviceProvider
+        )
         {
             _config = config;
             _serviceProvider = serviceProvider;
         }
-
+        
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
             IChecker? checker = null;
-            int mode = !String.IsNullOrEmpty((string)_config.Get("Mode")) ? Convert.ToInt32(_config.Get("Mode")) : 0;
+            int mode = (int)_config.Get("Mode");
             switch (mode)
             {
                 case (int)Mode.Github:
+                    checker = _serviceProvider.GetRequiredService<GithubService>();
                     break;
-                case (int)Mode.SMB:
+                case (int)Mode.SMB :
+                    throw new NotImplementedException();
                     break;
                 case (int)Mode.GLPI:
+                    throw new NotImplementedException();
                     break;
             }
 
@@ -35,5 +40,5 @@ namespace GLPIAgentUpdater.Services.BackgroundServices
                 await checker.Run(stoppingToken);
             }
         }
-    }
+    }   
 }

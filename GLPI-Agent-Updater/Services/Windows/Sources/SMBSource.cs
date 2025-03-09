@@ -2,7 +2,7 @@
 using GLPIAgentUpdater.Interfaces;
 using GLPIAgentUpdater.Interfaces.Windows;
 using GLPIAgentUpdater.Models;
-using GLPIAgentUpdater.Services.Shared;
+using GLPIAgentUpdater.Services.Global;
 
 namespace GLPIAgentUpdater.Services.Windows
 {
@@ -55,11 +55,11 @@ namespace GLPIAgentUpdater.Services.Windows
                 FileVersion smbFile;
                 if (version.Equals("Latest"))
                 {
-                    smbFile = await _smb.GetLatest(server, Extension.msi);
+                    smbFile = await _smb.GetLatest(server);
                 }
                 else
                 {
-                    smbFile = await _smb.GetTarget(server, Extension.msi, version);
+                    smbFile = await _smb.GetTarget(server, version);
                 }
 
                 if (smbFile == null)
