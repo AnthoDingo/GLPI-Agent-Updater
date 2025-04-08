@@ -6,15 +6,15 @@ using System.Text.RegularExpressions;
 
 namespace GLPIAgentUpdater.Services.Windows
 {
-    internal class RegistryService : IRegistry
+    internal class ConfigService : IRegistry
     {
         private IEventManager _em;
-        private readonly ILogger<RegistryService> _logger;
+        private readonly ILogger<ConfigService> _logger;
 
         private string _keyName = @"SOFTWARE\GLPI-Agent-Updater";
         RegistryKey _key;
 
-        public RegistryService(IEventManager eventManager, ILogger<RegistryService> logger)
+        public ConfigService(IEventManager eventManager, ILogger<ConfigService> logger)
         {
             _em = eventManager;
             _logger = logger;

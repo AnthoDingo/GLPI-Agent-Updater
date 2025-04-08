@@ -3,16 +3,16 @@ using GLPIAgentUpdater.Interfaces;
 
 namespace GLPIAgentUpdater.Services.MacOS
 {
-    internal class PlistService : IConfig
+    internal class ConfigService : IConfig
     {
-        private readonly ILogger<PlistService> _logger;
+        private readonly ILogger<ConfigService> _logger;
 
         private string _filePath = "/Library/Preferences/fr.frapps42.github-updater.plist";
         private FileInfo _fileInfo = new FileInfo("/Library/Preferences/fr.frapps42.github-updater.plist");
         
         private FileInfo _agentInfo = new FileInfo("/Applications/GLPI-Agent/Contents/Info.plist");
 
-        public PlistService(ILogger<PlistService> logger){
+        public ConfigService(ILogger<ConfigService> logger){
             _logger = logger;
 
             if(!(File.Exists(_filePath))){

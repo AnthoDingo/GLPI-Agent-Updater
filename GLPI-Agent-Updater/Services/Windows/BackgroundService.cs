@@ -2,7 +2,6 @@ using GLPIAgentUpdater.Enums;
 using GLPIAgentUpdater.Interfaces;
 using GLPIAgentUpdater.Interfaces.Windows;
 using GLPIAgentUpdater.Services.Global;
-using GLPIAgentUpdater.Services.Windows;
 
 namespace GLPIAgentUpdater.Services.Windows
 {

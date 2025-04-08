@@ -67,7 +67,7 @@ namespace GLPIAgentUpdater.Services.Global
                 }
 
                 _em.Info(
-                    $"New GLPI Agent available. Current installed version : {agentVersion}. Available version : {onlineVersion}");
+                    $"New GLPI Agent available.\r\nCurrent installed version : {agentVersion}.\r\nAvailable version : {onlineVersion}");
                 try
                 {
                     string filePath = await this.DownloadRelease(onlineRelease, Path.GetTempPath());
@@ -153,7 +153,7 @@ namespace GLPIAgentUpdater.Services.Global
 
             string assetFilter = null;
             #if OS_WINDOWS
-                assetFilter = $"GLPI-Agent-{release.TagName}-x64.msi";
+            assetFilter = $"GLPI-Agent-{release.TagName}-x64.msi";
             #endif
             
             #if OS_MAC
@@ -187,7 +187,7 @@ namespace GLPIAgentUpdater.Services.Global
             FileInfo info = new FileInfo(filePath);
             if (info.Length != asset.Size)
             {
-                _em.Warning($"GLPI Agent file size is not correct. Target value : {asset.Size} Downloaded file size : {info.Length}");
+                _em.Warning($"GLPI Agent file size is not correct.\r\nTarget value : {asset.Size}\r\nDownloaded file size : {info.Length}");
                 return null;
             }
             else

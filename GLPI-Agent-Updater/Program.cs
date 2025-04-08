@@ -120,7 +120,7 @@ namespace GLPIAgentUpdater
             
             services
                 .AddSingleton<IEventManager, LogManager>()
-                .AddSingleton<IConfig, PlistService>()
+                .AddSingleton<IConfig, ConfigService>()
                 .AddSingleton<IInstaller, InstallerService>()
                 .AddSingleton<IChecker, GithubService>()
                 .AddSingleton<SMBSource>();

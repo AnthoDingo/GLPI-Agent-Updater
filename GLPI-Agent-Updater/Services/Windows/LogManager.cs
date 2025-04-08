@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace GLPIAgentUpdater.Services.Windows
 {
-    internal class EventManager : IEventManager
+    internal class LogManager : IEventManager
     {
         private EventLog _log;
 
-        public EventManager()
+        public LogManager()
         {
             _log = new EventLog("Application");
             _log.Source = "GLPI Agent Updater";
