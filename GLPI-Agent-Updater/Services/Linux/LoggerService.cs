@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GLPIAgentUpdater.Services.Linux
 {
-    internal class LoggerService
+    internal class LogManager
     {
     }
 }

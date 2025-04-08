@@ -1,6 +1,6 @@
 ﻿using IniParser.Model;
 using IniParser;
-using GLPIAgentUpdater.Interfaces.Linux;
+using GLPIAgentUpdater.Interfaces;
 
 namespace GLPIAgentUpdater.Services.Linux
 {

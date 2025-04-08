@@ -50,7 +50,6 @@
     <Content Update="appsettings.Development.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-    <Content Remove="Services\Linux\**" />
   </ItemGroup>
 
 
@@ -60,16 +59,6 @@
 
 
   <ItemGroup>
-    <Compile Remove="Services\Linux\**" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Services\Linux\**" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <None Remove="Services\Linux\**" />
+    <Compile Include="Services\Linux\ConfigService.cs" />
   </ItemGroup>
 </Project>
