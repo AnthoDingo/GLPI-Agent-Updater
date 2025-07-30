@@ -3,10 +3,12 @@
 
 #define MyAppName "GLPI Agent Updater"
 #define MyAppUnderLineName "GLPI_Agent_Updater"
-#define MyAppVersion "0.1"
+#define MyAppVersion "0.1.3"
 #define MyAppPublisher "AnthoDingo"
 #define MyAppURL "https://github.com/AnthoDingo/GLPI-Agent-Updater"
 #define MyAppExeName "GLPI-Agent-Updater.exe"
+
+#include "CodeDependencies.iss"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -20,16 +22,28 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={commonpf}\{#MyAppName}
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=..\LICENSE
 OutputDir=.\bin
+
+UninstallDisplayName={#MyAppName} {#MyAppVersion}
+
+
 OutputBaseFilename={#MyAppUnderLineName}_{#MyAppVersion}_x64
-Compression=lzma
-SolidCompression=yes
-ArchitecturesInstallIn64BitMode=x64
+Compression=lzma2
+SolidCompression=no
+
+; "ArchitecturesAllowed=x64compatible" specifies that Setup cannot run
+; on anything but x64 and Windows 11 on Arm.
+ArchitecturesAllowed=x64compatible
+; "ArchitecturesInstallIn64BitMode=x64compatible" requests that the
+; install be done in "64-bit mode" on x64 or Windows 11 on Arm,
+; meaning it should use the native 64-bit Program Files directory and
+; the 64-bit view of the registry.
+ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=admin
 
 [Languages]
@@ -37,6 +51,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: ".\src\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\src\dotnet-runtime-8.0.18-win-x64.exe"; Flags: dontcopy noencryption
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -56,7 +71,6 @@ var
   VersionPage: TWizardPage;
   VersionEdit: TEdit;
   ResultInstallCode: Integer;
-  ResultStartCode: Integer;
   ResultUninstallCode: Integer;
   ModeParam: String;
   PathParam: String;
@@ -197,4 +211,12 @@ begin
   begin
     Result := ServerAddress.Text
   end ;
+end;
+
+function InitializeSetup: Boolean;
+begin
+  ExtractTemporaryFile('dotnet-runtime-8.0.18-win-x64.exe');
+  Dependency_AddDotNet80;
+
+  Result := True;
 end;

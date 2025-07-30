@@ -134,10 +134,9 @@ namespace GLPIAgentUpdater.Services.Windows
         private async Task InstallFromSMBAsync(FileVersion file)
         {
             string server = (string)_registry.Get("Server");
-            string filePath = "";
             try
             {
-                File.Copy($@"{server}\{file.FileName}", $@"C:\Windows\Temp\{file.FileName}");
+                File.Copy($@"{server}\{file.FileName}", $@"C:\Windows\Temp\{file.FileName}", true);
             }
             catch (Exception e)
             {
